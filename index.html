@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Website Warung - Lihat Menu dan Pesan Online"
+    />
+    <meta name="theme-color" content="#FF6B35" />
+    <title>Warung Mama Hani - Pesan Sekarang</title>
+    <link rel="manifest" href="manifest.json" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🍚</text></svg>"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      /* Container */
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* Menu Grid */
+      .menu-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .menu-item {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .menu-item:active {
+        transform: scale(0.95);
+      }
+
+      .menu-item-image {
+        width: 100%;
+        height: 120px;
+        background: linear-gradient(135deg, #ffb84d, #ff8c42);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+      }
+
+      .menu-item-info {
+        padding: 12px;
+      }
+
+      .menu-item-name {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      .menu-item-price {
+        color: #ff6b35;
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+
+      .btn-add {
+        width: 100%;
+        background: #ff6b35;
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 12px;
+      }
+
+      .btn-add:active {
+        background: #e55a2b;
+      }
+
+      /* Keranjang */
+      .cart-section {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .cart-section h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #ff6b35;
+        padding-bottom: 10px;
+      }
+
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .cart-item:last-child {
+        border-bottom: none;
+      }
+
+      .item-details {
+        flex: 1;
+      }
+
+      .item-name {
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+
+      .item-qty {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .item-price {
+        color: #ff6b35;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .qty-control {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .qty-btn {
+        width: 25px;
+        height: 25px;
+        border: 1px solid #ff6b35;
+        background: white;
+        color: #ff6b35;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .qty-btn:active {
+        background: #ff6b35;
+        color: white;
+      }
+
+      .qty-display {
+        min-width: 20px;
+        text-align: center;
+      }
+
+      .btn-remove {
+        width: 25px;
+        height: 25px;
+        border: none;
+        background: #ff6b35;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .empty-cart {
+        text-align: center;
+        color: #999;
+        padding: 20px;
+        font-size: 14px;
+      }
+
+      /* Total */
+      .cart-total {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 2px solid #ff6b35;
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        font-size: 18px;
+        color: #ff6b35;
+      }
+
+      /* Buttons */
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .btn:active {
+        transform: scale(0.98);
+      }
+
+      .btn-checkout {
+        background: #ff6b35;
+        color: white;
+      }
+
+      .btn-reset {
+        background: #ddd;
+        color: #333;
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* Info Section */
+      .info-section {
+        background: #fff3e0;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .info-section strong {
+        color: #ff6b35;
+      }
+
+      /* Responsive */
+      @media (max-width: 400px) {
+        .menu-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🍚 Warung Mama Hani</h1>
+      <p>Pesan menu favorit kamu sekarang juga!</p>
+    </div>
+
+    <div class="container">
+      <!-- Info -->
+      <div class="info-section">
+        <strong>📍 Alamat:</strong> Jl. Raya Warung<br />
+        <strong>⏰ Jam Buka:</strong> 07:00 - 20:00<br />
+        <strong>📱 Pesan via WhatsApp</strong>
+      </div>
+
+      <!-- Menu -->
+      <h2 style="margin-bottom: 15px; color: #ff6b35">Menu Kami</h2>
+      <div class="menu-grid" id="menuGrid"></div>
+
+      <!-- Keranjang -->
+      <div class="cart-section">
+        <h2>🛒 Keranjang Belanja</h2>
+        <div id="cartItems" class="empty-cart">
+          Pilih menu untuk mulai pesan
+        </div>
+        <div id="cartTotal" class="cart-total" style="display: none">
+          <span>Total:</span>
+          <span id="totalPrice">Rp 0</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button
+          class="btn btn-checkout"
+          id="checkoutBtn"
+          onclick="checkout()"
+          disabled
+        >
+          ✅ Pesan Sekarang
+        </button>
+        <button class="btn btn-reset" onclick="resetCart()">🔄 Ulang</button>
+      </div>
+    </div>
+
+    <script>
+      // Data Menu
+      const menu = [
+        { id: 1, name: "Gado-Gado", price: 13000, emoji: "🍚" },
+        { id: 2, name: "karedok", price: 13000, emoji: "🥗" },
+        { id: 3, name: "soto ayam", price: 13000, emoji: "🍲" },
+        { id: 4, name: "pecel lele", price: 12000, emoji: "🍗" },
+        { id: 5, name: "pecel ayam", price: 12000, emoji: "🍗" },
+        { id: 6, name: "nasi polos", price: 5000, emoji: "🍚" },
+        { id: 8, name: "es teh manis", price: 5000, emoji: "🧊" },
+        { id: 9, name: "teh manis", price: 3000, emoji: "☕" },
+      ];
+
+      let cart = {};
+
+      // Render Menu
+      function renderMenu() {
+        const menuGrid = document.getElementById("menuGrid");
+        menuGrid.innerHTML = menu
+          .map(
+            (item) => `
+                <div class="menu-item" onclick="addToCart(${item.id})">
+                    <div class="menu-item-image">${item.emoji}</div>
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">${item.name}</div>
+                        <div class="menu-item-price">Rp ${item.price.toLocaleString("id-ID")}</div>
+                        <button class="btn-add">+ Tambah</button>
+                    </div>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      // Add to Cart
+      function addToCart(itemId) {
+        if (!cart[itemId]) {
+          cart[itemId] = 1;
+        } else {
+          cart[itemId]++;
+        }
+        renderCart();
+      }
+
+      // Change Quantity
+      function changeQty(itemId, change) {
+        cart[itemId] += change;
+        if (cart[itemId] <= 0) {
+          delete cart[itemId];
+        }
+        renderCart();
+      }
+
+      // Remove from Cart
+      function removeFromCart(itemId) {
+        delete cart[itemId];
+        renderCart();
+      }
+
+      // Render Cart
+      function renderCart() {
+        const cartItemsDiv = document.getElementById("cartItems");
+        const cartTotalDiv = document.getElementById("cartTotal");
+        const checkoutBtn = document.getElementById("checkoutBtn");
+
+        const cartItems = Object.keys(cart);
+
+        if (cartItems.length === 0) {
+          cartItemsDiv.innerHTML =
+            '<div class="empty-cart">Pilih menu untuk mulai pesan</div>';
+          cartTotalDiv.style.display = "none";
+          checkoutBtn.disabled = true;
+          return;
+        }
+
+        let total = 0;
+        cartItemsDiv.innerHTML = cartItems
+          .map((itemId) => {
+            const item = menu.find((m) => m.id == itemId);
+            const qty = cart[itemId];
+            const subtotal = item.price * qty;
+            total += subtotal;
+
+            return `
+                    <div class="cart-item">
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-qty">Rp ${item.price.toLocaleString("id-ID")} × ${qty}</div>
+                        </div>
+                        <div class="item-price">Rp ${subtotal.toLocaleString("id-ID")}</div>
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="changeQty(${itemId}, -1)">−</button>
+                            <span class="qty-display">${qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${itemId}, 1)">+</button>
+                            <button class="btn-remove" onclick="removeFromCart(${itemId})">✕</button>
+                        </div>
+                    </div>
+                `;
+          })
+          .join("");
+
+        document.getElementById("totalPrice").textContent =
+          "Rp " + total.toLocaleString("id-ID");
+        cartTotalDiv.style.display = "flex";
+        checkoutBtn.disabled = false;
+      }
+
+      // Checkout
+      function checkout() {
+        const cartItems = Object.keys(cart);
+        if (cartItems.length === 0) return;
+
+        let message = "Pesanan dari Warung Mama Hani:\n\n";
+        let total = 0;
+
+        cartItems.forEach((itemId) => {
+          const item = menu.find((m) => m.id == itemId);
+          const qty = cart[itemId];
+          const subtotal = item.price * qty;
+          total += subtotal;
+          message += `${item.name} × ${qty} = Rp ${subtotal.toLocaleString("id-ID")}\n`;
+        });
+
+        message += `\nTotal: Rp ${total.toLocaleString("id-ID")}`;
+        message += `\n\nNama: _____\nNo. HP: _____`;
+
+        const whatsappNumber = "628995804396"; // GANTI DENGAN NOMOR IBU
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+        window.open(whatsappUrl, "_blank");
+      }
+
+      // Reset Cart
+      function resetCart() {
+        cart = {};
+        renderCart();
+      }
+
+      // Service Worker
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      }
+
+      // Initialize
+      renderMenu();
+      renderCart();
+    </script>
+  </body>
+</html>
